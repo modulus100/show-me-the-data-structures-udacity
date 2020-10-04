@@ -1,8 +1,9 @@
-class LRUCache(object):
+class LRU_Cache(object):
 
     def __init__(self, capacity):
-        # Initialize class variables
-        pass
+        self.capacity = capacity
+        self.container = {}
+        self.length = 0
 
     def get(self, key):
         # Retrieve item from provided key. Return -1 if nonexistent.
@@ -12,8 +13,17 @@ class LRUCache(object):
         # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item.
         pass
 
+    def size(self):
+        return self.length
 
-our_cache = LRUCache(5)
+    def is_full(self):
+        return self.length == self.capacity
+
+    def put(self, key, value):
+        pass
+
+
+our_cache = LRU_Cache(5)
 
 our_cache.set(1, 1)
 our_cache.set(2, 2)
