@@ -1,4 +1,17 @@
+"""
+Solution is based on https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU and my
+my solution which i used for leetcode. LRU cache can be implemented using a hashmap and a doubly linked list
+HashMap as a key uses the key from get/set method and as a value it uses a reference to the node from doubly
+linked list. Doubly linked list keeps nodes with value and works as a queue with limited capacity.
+Overall complexity for get and set methods is O(1) (no iterative actions), space complexity is O(n), because
+this cache stores max n nodes with values.
+"""
+
+
 class Node:
+    """
+    Doubly linked list implementation
+    """
 
     def __init__(self, key, value, next=None, prev=None):
         self.key = key
@@ -35,24 +48,33 @@ class LRUCache(object):
             raise Exception("value is invalid")
 
         if self.cache_initialized():
+            # if capacity is 1 or head is not initialized, then tail and head are the same
             self.cache[key] = self.head = self.tail = Node(key, value)
         elif key in self.cache.keys():
+            # check if the key is already added
             node = self.cache[key]
             if node is self.head:
+                # if the key at the top then we simply change a value
                 self.head.value = value
             else:
+                # move node from current position to the top
                 node.prev.next = node.next
                 self.head = Node(key, value, self.head)
                 self.head.next.prev = self.head
                 self.cache[key] = self.head
+
+                # if the key at the tail then we set a new tail
                 if node is self.tail:
                     self.tail = node.prev
         elif self.is_full():
+            # simply adds a new head ant removes a tail
             self.head = Node(key, value, self.head)
+            # removed from cache
             self.cache.pop(self.tail.key)
             self.tail = self.tail.prev
             self.cache[key] = self.head
         else:
+            # simply adds an element to the queue
             self.head = new_node = Node(key, value, self.head)
             new_node.next.prev = new_node
             self.cache[key] = self.head
