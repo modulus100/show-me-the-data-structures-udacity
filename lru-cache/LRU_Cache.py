@@ -37,7 +37,7 @@ class LRUCache(object):
                 self.head = Node(key, value, self.head)
                 self.head.next.prev = self.head
                 self.cache[key] = self.head
-                if node.next is None:
+                if node is self.tail:
                     self.tail = node.prev
         elif len(self.cache) == self.capacity:
             self.head = Node(key, value, self.head)
