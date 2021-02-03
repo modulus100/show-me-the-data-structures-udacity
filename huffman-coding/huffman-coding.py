@@ -30,7 +30,7 @@ class Tree:
         if node is not None:
             self._print_tree(node.left, level + 1)
             char = node.char if node.char is not None else "+"
-            print(' ' * 4 * level + '->', char, ' count: ', node.freq, ' is leaf: ', node.is_leaf)
+            print(' ' * 4 * level + '->', char, 'freq:', node.freq, 'is leaf:', node.is_leaf)
             self._print_tree(node.right, level + 1)
 
     def print_tree(self):
@@ -50,7 +50,6 @@ def huffman_encoding(data) -> Tree:
         else:
             freq_map[element] = 1
 
-    # priority queue
     queue = PriorityQueue()
 
     for key, value in freq_map.items():
