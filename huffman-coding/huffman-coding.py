@@ -17,9 +17,10 @@ class Node:
         return self.freq == other.freq
 
     def __str__(self):
-        return 'is leaf: ' + str(self.is_leaf)\
-               + ' count: ' + str(self.freq)\
-               + ' char: ' + str(self.char)
+        char = self.char if self.char is not None else "+"
+        return char\
+            + ' freq: ' + str(self.freq)\
+            + ' is leaf: ' + str(self.is_leaf)
 
 
 class Tree:
@@ -30,7 +31,7 @@ class Tree:
         if node is not None:
             self._print_tree(node.left, level + 1)
             char = node.char if node.char is not None else "+"
-            print(' ' * 4 * level + '->', char, 'freq:', node.freq, 'is leaf:', node.is_leaf)
+            print(' ' * 4 * level + '->', node)
             self._print_tree(node.right, level + 1)
 
     def print_tree(self):
