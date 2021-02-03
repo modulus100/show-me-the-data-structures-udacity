@@ -11,10 +11,10 @@ class Node:
         self.char = char
 
     def __gt__(self, other):
-        return self.freq > other.count
+        return self.freq > other.freq
 
     def __eq__(self, other):
-        return self.freq == other.count
+        return self.freq == other.freq
 
     def __str__(self):
         return 'is leaf: ' + str(self.is_leaf)\
@@ -57,14 +57,16 @@ def huffman_encoding(data) -> Tree:
         queue.put(node)
 
     while not queue.empty():
-        node1: Node = queue.get()
+        left_node: Node = queue.get()
         if queue.empty():
-            return Tree(node1)
+            return Tree(left_node)
 
-        node2: Node = queue.get()
-        set_is_leaf(node1)
-        set_is_leaf(node2)
-        parent_node = Node(False, node1, node2, node1.freq + node2.freq)
+        right_node: Node = queue.get()
+        set_is_leaf(left_node)
+        set_is_leaf(right_node)
+
+        freq_sum = left_node.freq + right_node.freq
+        parent_node = Node(False, left_node, right_node, freq_sum)
         queue.put(parent_node)
 
 
