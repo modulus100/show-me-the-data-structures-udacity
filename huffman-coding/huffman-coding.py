@@ -1,8 +1,10 @@
 import sys
-from queue import PriorityQueue
+from queue import PriorityQueue, Queue
+from typing import Tuple
 
 
 class Node:
+
     def __init__(self, is_leaf: bool = False, left=None, right=None, freq=0, char=None):
         self.is_leaf = is_leaf
         self.left = left
@@ -24,13 +26,13 @@ class Node:
 
 
 class Tree:
+
     def __init__(self, head: Node = None):
         self.head: Node = head
 
     def _print_tree(self, node: Node, level: int):
         if node is not None:
             self._print_tree(node.left, level + 1)
-            char = node.char if node.char is not None else "+"
             print(' ' * 4 * level + '->', node)
             self._print_tree(node.right, level + 1)
 
@@ -38,52 +40,82 @@ class Tree:
         self._print_tree(self.head, 0)
 
 
-def huffman_encoding(data) -> Tree:
-    if not data:
-        raise Exception("data is not valid")
+class HuffmanCoding:
 
-    # frequencies
-    freq_map = {}
+    def encode(self, data: str) -> Tuple[str, Tree]:
+        if not data:
+            raise Exception("data is not valid")
 
-    for element in data:
-        if element in freq_map.keys():
-            freq_map[element] += 1
+        freq_map = self.count_frequencies(data)
+        queue = PriorityQueue()
+
+        # init nodes
+        for key, value in freq_map.items():
+            node = Node(freq=value, char=key)
+            queue.put(node)
+
+        tree = self.build_tree(queue)
+        char_code_map = self.build_char_code_map(tree.head)
+        encoded_data = self.build_encoded_data(data, char_code_map)
+        return encoded_data, tree
+
+    def build_char_code_map(self, head: Node) -> dict:
+        char_code_map = {}
+        self.preorder_traversal(head.left, char_code_map, "0")
+        self.preorder_traversal(head.right, char_code_map, "1")
+        return char_code_map
+
+    def preorder_traversal(self, node: Node, char_code_map: dict, code: str):
+        if node is None:
+            return
+        if node.char is not None:
+            char_code_map[node.char] = code
+
+        self.preorder_traversal(node.left, char_code_map, code + "0")
+        self.preorder_traversal(node.right, char_code_map, code + "1")
+
+    def build_encoded_data(self, data: str, char_code_map: dict) -> str:
+        encoded_data = ""
+        for element in data:
+            encoded_data += char_code_map[element]
+        return encoded_data
+
+    def build_tree(self, queue) -> Tree:
+        while not queue.empty():
+            left_node: Node = queue.get()
+            if queue.empty():
+                return Tree(left_node)
+
+            right_node: Node = queue.get()
+            self.set_is_leaf(left_node)
+            self.set_is_leaf(right_node)
+
+            freq_sum = left_node.freq + right_node.freq
+            parent_node = Node(False, left_node, right_node, freq_sum)
+            queue.put(parent_node)
+
+    def set_is_leaf(self, node: Node):
+        if node.left is None and node.right is None:
+            node.is_leaf = True
         else:
-            freq_map[element] = 1
+            node.is_leaf = False
 
-    queue = PriorityQueue()
+    def count_frequencies(self, data: str):
+        freq_map = {}
+        for element in data:
+            if element in freq_map.keys():
+                freq_map[element] += 1
+            else:
+                freq_map[element] = 1
+        return freq_map
 
-    for key, value in freq_map.items():
-        node = Node(freq=value, char=key)
-        queue.put(node)
-
-    while not queue.empty():
-        left_node: Node = queue.get()
-        if queue.empty():
-            return Tree(left_node)
-
-        right_node: Node = queue.get()
-        set_is_leaf(left_node)
-        set_is_leaf(right_node)
-
-        freq_sum = left_node.freq + right_node.freq
-        parent_node = Node(False, left_node, right_node, freq_sum)
-        queue.put(parent_node)
-
-
-def set_is_leaf(node: Node):
-    if node.left is None and node.right is None:
-        node.is_leaf = True
-    else:
-        node.is_leaf = False
-
-
-def huffman_decoding(data, tree):
-    pass
+    def decode(self, data, tree):
+        pass
 
 
 if __name__ == "__main__":
     codes = {}
+    huffman = HuffmanCoding()
 
     a_great_sentence = "The bird is the word"
 
@@ -91,12 +123,13 @@ if __name__ == "__main__":
     print("The content of the data is: {}\n".format(a_great_sentence))
 
     # encoded_data, tree = huffman_encoding(a_great_sentence)
-    tree = huffman_encoding("AAAAAAABBBCCCCCCCDDEEEEEE")
+    encoded_data, tree = huffman.encode("AAAAAAABBBCCCCCCCDDEEEEEE")
     tree.print_tree()
+    # print(encoded_data)
 
-    # print("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
-    # print("The content of the encoded data is: {}\n".format(encoded_data))
-    #
+    print("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
+    print("The content of the encoded data is: {}\n".format(encoded_data))
+
     # decoded_data = huffman_decoding(encoded_data, tree)
     #
     # print("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
