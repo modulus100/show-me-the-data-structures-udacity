@@ -3,20 +3,37 @@ from queue import PriorityQueue
 
 
 class Node:
-    def __init__(self, is_leaf: bool = False, left=None, right=None, count=0, char=None):
+    def __init__(self, is_leaf: bool = False, left=None, right=None, freq=0, char=None):
         self.is_leaf = is_leaf
         self.left = left
         self.right = right
-        self.count = count
+        self.freq = freq
         self.char = char
+
+    def __gt__(self, other):
+        return self.freq > other.count
+
+    def __eq__(self, other):
+        return self.freq == other.count
+
+    def __str__(self):
+        return 'is leaf: ' + str(self.is_leaf)\
+               + ' count: ' + str(self.freq)\
+               + ' char: ' + str(self.char)
 
 
 class Tree:
-    def __init__(self):
-        self.head: Node = None
+    def __init__(self, head: Node = None):
+        self.head: Node = head
 
-    def initialized(self) -> bool:
-        return self.head is None
+    def _print_tree(self, node: Node, level: int):
+        if node is not None:
+            self._print_tree(node.left, level + 1)
+            print(' ' * 4 * level + '->', node.char, ' count: ', node.freq, ' is leaf: ', node.is_leaf)
+            self._print_tree(node.right, level + 1)
+
+    def print_tree(self):
+        self._print_tree(self.head, 0)
 
 
 def huffman_encoding(data) -> Tree:
@@ -28,32 +45,34 @@ def huffman_encoding(data) -> Tree:
 
     for element in data:
         if element in freq_map.keys():
-            freq_map[element] = freq_map[element] + 1
+            freq_map[element] += 1
         else:
             freq_map[element] = 1
 
     # priority queue
-    priority_q = PriorityQueue()
-    # print(priority_q.get())
-    # fill the queue
+    queue = PriorityQueue()
+
     for key, value in freq_map.items():
-        priority_q.put((value, key))
+        node = Node(freq=value, char=key)
+        queue.put(node)
 
-    tree = Tree()
+    while not queue.empty():
+        node1: Node = queue.get()
+        if queue.empty():
+            return Tree(node1)
 
-    # while not priority_q.empty():
-    #     left = priority_q.get()
-    #     right = priority_q.get()
-    #
-    #     if not tree.initialized() is None:
-    #         left_node = Node(True, count=left[0], char=left[1])
-    #         right_node = Node(True, count=right[0], char=right[1])
-    #         total_count = left_node.count + right_node.count
-    #         head = Node(False, left_node, right_node, total_count)
-    #         tree.head = head
-    #     # elif priority_q.
+        node2: Node = queue.get()
+        set_is_leaf(node1)
+        set_is_leaf(node2)
+        parent_node = Node(False, node1, node2, node1.freq + node2.freq)
+        queue.put(parent_node)
 
-    return tree
+
+def set_is_leaf(node: Node):
+    if node.left is None and node.right is None:
+        node.is_leaf = True
+    else:
+        node.is_leaf = False
 
 
 def huffman_decoding(data, tree):
@@ -69,7 +88,8 @@ if __name__ == "__main__":
     print("The content of the data is: {}\n".format(a_great_sentence))
 
     # encoded_data, tree = huffman_encoding(a_great_sentence)
-    huffman_encoding(a_great_sentence)
+    tree = huffman_encoding("AAAAAAABBBCCCCCCCDDEEEEEE")
+    tree.print_tree()
 
     # print("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
     # print("The content of the encoded data is: {}\n".format(encoded_data))
