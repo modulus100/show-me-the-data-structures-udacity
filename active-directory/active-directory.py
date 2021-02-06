@@ -41,3 +41,8 @@ sub_child.add_user(sub_child_user)
 
 child.add_group(sub_child)
 parent.add_group(child)
+
+group_service = GroupService()
+
+user_in_group = group_service.is_user_in_group(sub_child_user, parent)
+print(user_in_group)
