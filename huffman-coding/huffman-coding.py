@@ -1,5 +1,5 @@
 import sys
-from queue import PriorityQueue, Queue
+from queue import PriorityQueue
 from typing import Tuple
 
 
@@ -19,9 +19,7 @@ class Node:
 
     def __str__(self):
         char = self.char if self.char is not None else "+"
-        return char\
-            + ' freq: ' + str(self.freq)\
-            + ' is leaf: ' + str(self.is_leaf)
+        return char + ' freq: ' + str(self.freq) + ' is leaf: ' + str(self.is_leaf)
 
 
 class Tree:
@@ -35,7 +33,9 @@ class Tree:
             self._print_tree(node.right, level + 1)
 
     def print_tree(self):
-        self._print_tree(self.head, 0)
+        if self.head is not None:
+            print("Tree structure:\n")
+            self._print_tree(self.head, 0)
 
 
 class HuffmanCoding:
@@ -46,7 +46,6 @@ class HuffmanCoding:
         freq_map = self.count_frequencies(data)
         queue = PriorityQueue()
 
-        # init nodes
         for key, value in freq_map.items():
             node = Node(freq=value, char=key)
             queue.put(node)
@@ -97,7 +96,7 @@ class HuffmanCoding:
         else:
             node.is_leaf = False
 
-    def count_frequencies(self, data: str):
+    def count_frequencies(self, data: str) -> dict:
         freq_map = {}
         for element in data:
             if element in freq_map.keys():
@@ -106,7 +105,7 @@ class HuffmanCoding:
                 freq_map[element] = 1
         return freq_map
 
-    def decode(self, encoded_data: str, tree: Tree):
+    def decode(self, encoded_data: str, tree: Tree) -> str:
         if not encoded_data:
             raise Exception("data is not valid")
         decoded_data = ""
@@ -136,14 +135,13 @@ if __name__ == "__main__":
     codes = {}
     huffman = HuffmanCoding()
 
-    a_great_sentence = "The bird is the word"
-    # a_great_sentence = "AAAAAAABBBCCCCCCCDDEEEEEE"
+    # a_great_sentence = "The bird is the word"
+    a_great_sentence = "AAAAAAABBBCCCCCCCDDEEEEEE"
 
     print("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
     print("The content of the data is: {}\n".format(a_great_sentence))
 
     encoded_data, tree = huffman.encode(a_great_sentence)
-    # tree.print_tree()
 
     print("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
     print("The content of the encoded data is: {}\n".format(encoded_data))
@@ -152,3 +150,5 @@ if __name__ == "__main__":
 
     print("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
     print("The content of the encoded data is: {}\n".format(decoded_data))
+
+    tree.print_tree()
