@@ -1,6 +1,6 @@
 import hashlib
-import time
 import json
+import datetime
 
 
 class Blockchain:
@@ -30,7 +30,7 @@ class Blockchain:
 class Block:
 
     def __init__(self, data, previous_hash):
-        self.timestamp = time.time()
+        self.timestamp = datetime.datetime.utcnow().timestamp()
         self.data = data
         self.previous_hash = previous_hash
         self.hash = ''
@@ -56,6 +56,7 @@ class Block:
 
 def test_block_chain():
     chain = Blockchain()
+    print(chain.last_block)
 
     for i in range(10):
         block = Block([{"data": "some content"}], chain.last_block.hash).hash_block()
