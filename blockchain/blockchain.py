@@ -18,13 +18,15 @@ class Blockchain:
             self.chain.append(block)
 
     def validate_block(self, block):
-        if self.last_block.hash != block.previous_hash:
-            return False
-        return True
+        return self.last_block.hash == block.previous_hash
 
     def generate_genesis_block(self):
         genesis_block = Block([], '').hash_block()
         self.chain.append(genesis_block)
+
+    def print(self):
+        for block in self.chain:
+            print(block)
 
 
 class Block:
@@ -55,13 +57,27 @@ class Block:
 
 
 def test_block_chain():
+    print("Test generated valid blockchain")
     chain = Blockchain()
     print(chain.last_block)
 
     for i in range(10):
         block = Block([{"data": "some content"}], chain.last_block.hash).hash_block()
         chain.add_block(block)
-        print(block)
+
+    chain.print()
+
+
+def test_add_not_valid_block():
+    print("\nTest not valid block won't be added")
+    chain = Blockchain()
+    chain.add_block(Block([], ''))
+
+    if len(chain.chain) != 1:
+        raise Exception('Error while adding a new block')
+
+    chain.print()
 
 
 test_block_chain()
+test_add_not_valid_block()
