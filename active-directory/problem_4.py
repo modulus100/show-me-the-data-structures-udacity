@@ -29,6 +29,9 @@ class GroupService:
           user(str): user name/id
           group(class:Group): group to check user membership against
         """
+        if not user or not group:
+            return False
+
         if user in group.users:
             return True
 
@@ -38,17 +41,49 @@ class GroupService:
         return False
 
 
-parent = Group("parent")
-child = Group("child")
-sub_child = Group("subchild")
+def test_user_in_group():
+    print("Test user in group")
+    parent = Group("parent")
+    child = Group("child")
+    sub_child = Group("subchild")
 
-sub_child_user = "sub_child_user"
-sub_child.add_user(sub_child_user)
+    sub_child_user = "sub_child_user"
+    sub_child.add_user(sub_child_user)
 
-child.add_group(sub_child)
-parent.add_group(child)
+    child.add_group(sub_child)
+    parent.add_group(child)
 
-group_service = GroupService()
+    group_service = GroupService()
 
-user_in_group = group_service.is_user_in_group(sub_child_user, parent)
-print(user_in_group)
+    user_in_group = group_service.is_user_in_group(sub_child_user, parent)
+    print("User found: " + str(user_in_group))
+
+
+def test_user_not_in_group():
+    print("\nTest user not in group")
+    parent = Group("parent")
+    child = Group("child")
+    sub_child = Group("subchild")
+
+    sub_child_user = "sub_child_user"
+    sub_child.add_user(sub_child_user)
+
+    child.add_group(sub_child)
+    parent.add_group(child)
+
+    group_service = GroupService()
+
+    user_in_group = group_service.is_user_in_group("test_user", parent)
+    print("User found: " + str(user_in_group))
+
+
+def test_not_valid_group():
+    print("\nTest not valid group")
+    group_service = GroupService()
+    user_in_group = group_service.is_user_in_group("test_user", None)
+    print("User found: " + str(user_in_group))
+
+
+test_user_in_group()
+test_user_not_in_group()
+test_not_valid_group()
