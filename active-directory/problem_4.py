@@ -29,6 +29,12 @@ class GroupService:
           user(str): user name/id
           group(class:Group): group to check user membership against
         """
+        if user in group.users:
+            return True
+
+        for sub_group in group.groups:
+            if self.is_user_in_group(user, sub_group):
+                return True
         return False
 
 
