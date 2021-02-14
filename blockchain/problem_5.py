@@ -1,17 +1,22 @@
 import hashlib
 import json
 import datetime
+from typing import List
 
 
 class Blockchain:
 
     def __init__(self):
-        self.chain = []
+        self.chain: List[Block] = []
         self.generate_genesis_block()
 
     @property
     def last_block(self):
         return self.chain[-1]
+
+    @property
+    def genesis_block(self):
+        return self.chain[0]
 
     def add_block(self, block):
         if self.validate_block(block):
@@ -59,7 +64,6 @@ class Block:
 def test_block_chain():
     print("Test generated valid blockchain")
     chain = Blockchain()
-    print(chain.last_block)
 
     for i in range(10):
         block = Block([{"data": "some content"}], chain.last_block.hash).hash_block()
@@ -79,5 +83,19 @@ def test_add_not_valid_block():
     chain.print()
 
 
+def test_previous_hash():
+    print("\nTest previous hash")
+    chain = Blockchain()
+
+    block = Block([{"data": "some content"}], chain.last_block.hash).hash_block()
+    chain.add_block(block)
+
+    if chain.last_block.previous_hash != chain.genesis_block.hash:
+        raise Exception('Hash is not valid')
+
+    chain.print()
+
+
 test_block_chain()
 test_add_not_valid_block()
+test_previous_hash()
