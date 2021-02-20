@@ -110,9 +110,9 @@ linked_list_1.print()
 print("List 2")
 linked_list_2.print()
 print("Union result")
-union(linked_list_1,linked_list_2).print()
+union(linked_list_1, linked_list_2).print()
 print("Intersection result")
-intersection(linked_list_1,linked_list_2).print()
+intersection(linked_list_1, linked_list_2).print()
 
 
 # Test case 2
@@ -135,6 +135,31 @@ linked_list_3.print()
 print("List 4")
 linked_list_4.print()
 print("Union result")
-union(linked_list_3,linked_list_4).print()
+union(linked_list_3, linked_list_4).print()
 print("Intersection result")
-intersection(linked_list_3,linked_list_4).print()
+intersection(linked_list_3, linked_list_4).print()
+
+
+# Test case 3
+
+linked_list_5 = LinkedList()
+linked_list_6 = LinkedList()
+
+element_1 = [3,2,4,35,6,65,6,4,3,23]
+element_2 = []
+
+for i in element_1:
+    linked_list_5.append(i)
+
+for i in element_2:
+    linked_list_6.append(i)
+
+print("Test 3")
+print("List 5")
+linked_list_5.print()
+print("List 6")
+linked_list_6.print()
+print("Union result")
+union(linked_list_5, linked_list_6).print()
+print("Intersection result")
+intersection(linked_list_5, linked_list_6).print()
