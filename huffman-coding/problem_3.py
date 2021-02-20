@@ -57,6 +57,10 @@ class HuffmanCoding:
 
     def build_char_code_map(self, head: Node) -> dict:
         char_code_map = {}
+
+        if head.char is not None:
+            char_code_map[head.char] = "0"
+
         self.preorder_traversal(head.left, char_code_map, "0")
         self.preorder_traversal(head.right, char_code_map, "1")
         return char_code_map
@@ -119,6 +123,8 @@ class HuffmanCoding:
     def decode_batch_of_bits(self, encoded_data: str, node: Node) -> Tuple[str, str]:
         for index, element in enumerate(encoded_data):
             if node.char is not None:
+                if index == 0:
+                    return encoded_data[1:], node.char
                 return encoded_data[index:], node.char
             elif element == "0":
                 node = node.left
@@ -131,17 +137,23 @@ class HuffmanCoding:
         raise Exception("encoded data is not valid")
 
 
-if __name__ == "__main__":
-    codes = {}
+def test_invalid_input():
+    print("\nTest invalid input")
     huffman = HuffmanCoding()
 
-    # a_great_sentence = "The bird is the word"
-    a_great_sentence = "AAAAAAABBBCCCCCCCDDEEEEEE"
+    try:
+        huffman.encode(None)
+    except Exception:
+        print("passed")
 
-    print("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
-    print("The content of the data is: {}\n".format(a_great_sentence))
 
-    encoded_data, tree = huffman.encode(a_great_sentence)
+def test_huffman(data):
+    huffman = HuffmanCoding()
+
+    print("The size of the data is: {}\n".format(sys.getsizeof(data)))
+    print("The content of the data is: {}\n".format(data))
+
+    encoded_data, tree = huffman.encode(data)
 
     print("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
     print("The content of the encoded data is: {}\n".format(encoded_data))
@@ -152,3 +164,23 @@ if __name__ == "__main__":
     print("The content of the encoded data is: {}\n".format(decoded_data))
 
     tree.print_tree()
+
+
+if __name__ == "__main__":
+    print("Test simple string")
+    # a_great_sentence = "The bird is the word"
+    a_great_sentence = "AAAAAAABBBCCCCCCCDDEEEEEE"
+    test_huffman(a_great_sentence)
+
+    print("\n\nTest repetitive string")
+    a_great_sentence = "AAAAAAA"
+    test_huffman(a_great_sentence)
+
+    print("\n\nTest invalid data")
+
+    huffman = HuffmanCoding()
+
+    try:
+        huffman.encode("")
+    except Exception:
+        print("passed")
