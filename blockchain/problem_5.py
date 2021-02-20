@@ -23,6 +23,13 @@ class Blockchain:
             self.chain.append(block)
 
     def validate_block(self, block):
+        if block is None:
+            raise Exception("Block is not valid")
+
+        if self.last_block.timestamp == block.timestamp:
+            block.timestamp = datetime.datetime.utcnow().timestamp()
+            block.hash_block()
+
         return self.last_block.hash == block.previous_hash
 
     def generate_genesis_block(self):
@@ -37,6 +44,7 @@ class Blockchain:
 class Block:
 
     def __init__(self, data, previous_hash):
+        self.validate_data(data)
         self.timestamp = datetime.datetime.utcnow().timestamp()
         self.data = data
         self.previous_hash = previous_hash
@@ -59,6 +67,10 @@ class Block:
     def hash_block(self):
         self.hash = self.calc_hash()
         return self
+
+    def validate_data(self, data):
+        if data is None:
+            raise Exception("Input params are not valid")
 
 
 def test_block_chain():
@@ -96,6 +108,39 @@ def test_previous_hash():
     chain.print()
 
 
+def test_not_valid_block():
+    print("\nTest add not valid block")
+    chain = Blockchain()
+
+    try:
+        chain.add_block(None)
+    except Exception:
+        print("passed")
+
+
+def test_same_timestamp():
+    print("\nTest same timestamps")
+    chain = Blockchain()
+
+    timestamp = datetime.datetime.utcnow().timestamp()
+    block1 = Block([], chain.last_block.hash)
+    block1.timestamp = timestamp
+    block1.hash_block()
+    chain.add_block(block1)
+
+    block2 = Block([], chain.last_block.hash)
+    block2.timestamp = timestamp
+    block2.hash_block()
+    chain.add_block(block2)
+
+    if chain.chain[-1].timestamp == chain.chain[-2].timestamp:
+        raise Exception("timestamps are same")
+    else:
+        print("passed")
+
+
 test_block_chain()
 test_add_not_valid_block()
 test_previous_hash()
+test_not_valid_block()
+test_same_timestamp()
