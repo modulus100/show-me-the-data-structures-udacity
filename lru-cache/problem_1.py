@@ -13,8 +13,8 @@ class Node:
 class LRUCache(object):
 
     def __init__(self, capacity):
-        if capacity < 1:
-            raise Exception("Min size is 1")
+        if capacity is None or capacity < 1 or capacity > 10:
+            raise Exception("Min capacity 1, max 10")
 
         self.capacity = capacity
         self.cache = {}
@@ -119,3 +119,16 @@ try:
     LRUCache(0)
 except Exception:
     print("throws exception for invalid LRU cache init size")
+
+print("\nTest invalid capacity")
+try:
+    LRUCache(-1)
+except Exception:
+    print("throws exception for capacity lower than 1")
+
+print("\nTest invalid capacity")
+try:
+    LRUCache(100)
+except Exception:
+    print("throws exception for capacity bigger than 10")
+
