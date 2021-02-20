@@ -73,7 +73,7 @@ def union(list_1: LinkedList, list_2: LinkedList) -> LinkedList:
     return list
 
 
-def intersection(list_1, list_2) -> LinkedList:
+def intersection(list_1: LinkedList, list_2: LinkedList) -> LinkedList:
     if list_1 is None or list_2 is None:
         raise Exception("List is not valid")
 
