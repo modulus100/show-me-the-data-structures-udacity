@@ -50,6 +50,9 @@ class LinkedList:
 
 
 def union(list_1: LinkedList, list_2: LinkedList) -> LinkedList:
+    if list_1 is None or list_2 is None:
+        raise Exception("List is not valid")
+
     list = LinkedList()
     unique_values_1 = set()
     unique_values_2 = set()
@@ -71,6 +74,9 @@ def union(list_1: LinkedList, list_2: LinkedList) -> LinkedList:
 
 
 def intersection(list_1, list_2) -> LinkedList:
+    if list_1 is None or list_2 is None:
+        raise Exception("List is not valid")
+
     list = LinkedList()
     unique_values_1 = set()
     unique_values_2 = set()
@@ -163,3 +169,42 @@ print("Union result")
 union(linked_list_5, linked_list_6).print()
 print("Intersection result")
 intersection(linked_list_5, linked_list_6).print()
+
+
+# Test case 4
+
+linked_list_7 = LinkedList()
+linked_list_8 = LinkedList()
+
+element_1 = []
+element_2 = []
+
+for i in element_1:
+    linked_list_7.append(i)
+
+for i in element_2:
+    linked_list_8.append(i)
+
+print("Test 4 empty lists")
+print("List 7")
+linked_list_7.print()
+print("List 8")
+linked_list_8.print()
+print("Union result")
+union(linked_list_7, linked_list_8).print()
+print("Intersection result")
+intersection(linked_list_7, linked_list_8).print()
+
+
+# Test case 5
+print("Test invalid lists")
+
+try:
+    union(None, None)
+except Exception:
+    print("passed")
+
+try:
+    intersection(None, None)
+except Exception:
+    print("passed")
