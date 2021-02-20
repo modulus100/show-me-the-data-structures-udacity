@@ -40,13 +40,6 @@ def find_files(suffix, path) -> List[str]:
     return file_paths
 
 
-"""
-Time complexity is about O(n^n), root directory may have n directories where each directory may also have n subdirectories.
-Space complexity is O(n^n), function should return n amount of found files, but uses recursion which leads to additional
-memory consumption.
-To solve this problem I chose recursion, it should work fast enough, implementation is simple, there is no requirements
-for memory.
-"""
 files = find_files(".c", "./testdir")
 
 valid_path = [
